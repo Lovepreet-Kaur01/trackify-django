@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <h1>My Todo List</h1>
+
+    <!-- DASHBOARD -->
+
+<div class="dashboard">
+
+    <div class="dashboard-card">
+
+        <h2>{{ total_tasks }}</h2>
+
+        <p>Total Tasks</p>
+
+    </div>
+
+    <div class="dashboard-card">
+
+        <h2>{{ completed_tasks }}</h2>
+
+        <p>Completed</p>
+
+    </div>
+
+    <div class="dashboard-card">
+
+        <h2>{{ pending_tasks }}</h2>
+
+        <p>Pending</p>
+
+    </div>
+
+</div>
+
+<!-- PROGRESS BAR -->
+
+<div class="progress-section">
+
+    <div class="progress-top">
+
+        <span>Progress</span>
+
+        <span>{{ progress }}%</span>
+
+    </div>
+
+    <div class="progress-bar">
+
+        <div
+            class="progress-fill"
+            style="width: {{ progress }}%;"
+        ></div>
+
+    </div>
+
+</div>
+
+    <!-- SEARCH -->
+
+    <form method="GET" class="search-form">
+
+        <input
+            type="text"
+            name="search"
+            placeholder="Search tasks..."
+        >
+
+        <button type="submit">
+            Search
+        </button>
+
+    </form>
+
+    <!-- ADD TASK -->
+
+    <form method="POST" class="task-form">
+
+        {% csrf_token %}
+
+        {{ form.title }}
+
+        {{ form.priority }}
+
+        {{ form.due_date }}
+
+        <button type="submit">
+            Add Task
+        </button>
+
+    </form>
+
+    <!-- TASKS -->
+
+    {% for task in tasks %}
+
+        <div class="task-card">
+
+            <div>
+
+                {% if task.completed %}
+
+                    <h3 class="completed-task">
+                        {{ task.title }}
+                    </h3>
+
+                {% else %}
+
+                    <h3>
+                        {{ task.title }}
+                    </h3>
+
+                {% endif %}
+
+                <p>
+                    Due:
+                    {{ task.due_date }}
+                </p>
+
+                <span class="priority {{ task.priority }}">
+                    {{ task.priority }}
+                </span>
+
+            </div>
+
+            <div class="buttons">
+
+                <a href="{% url 'complete' task.id %}">
+                    Complete
+                </a>
+
+                <a href="{% url 'update' task.id %}">
+                    Edit
+                </a>
+
+                <a href="{% url 'delete' task.id %}">
+                    Delete
+                </a>
+
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <div class="empty-state">
+
+            <h2>No Tasks Yet 🚀</h2>
+
+            <p>
+                Add your first task to get started.
+            </p>
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}
